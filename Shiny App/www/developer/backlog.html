@@ -1,0 +1,45 @@
+<h4>WORK ON NEXT</h4>
+<ol>
+	<li>expand information to independent cities, how do we want to number the IDs?</li>
+	<li>fix independent cities zoom parameters (lat,long,level)</li>
+	<li>now that you have all counties and DC aggregate cancer rates, you can use population to calculate DMV catchment area rates -- tough, since cancer rates is broken out by race as well</li>
+	<li>pull more data from EnviroAtlas</li>
+	<li>check out https://dchealth.dc.gov/service/behavioral-risk-factor-surveillance-system, see if only way to get Health and Risk Behaviors from wards is manually from pdfs</li>
+	<li>image downloads <- DIFFICULT</li>
+</ol><br>
+
+<h4>NICE TO HAVE</h4>
+<ol>
+	<li>change legend bins to be based off of sub-variables other than cancer (you did this already for cancer)</li>
+	<li>would be nice to make plots a bit more animated, such as using gganimate or d3 <- DIFFICULT</li>
+	<li>DATA_INFO_MESSAGE_LIST[3] is not being used. see where it's supposed to</li>
+	<li>learn how to consolidate entire capstone in an R package</li>
+	<li>include time parameter in cancer maps</li>
+	<li>add dates to release notes</li>
+	<li>cancer maps: when you change variable or subvariable, map will re-focus to current region. would be nice to leave view alone</li>
+	<li>width of button links not auto fitting</li>
+	<li>how to custom color bars in bar chart</li>
+	<li>bar chart get horizontal gridlines</li>
+	<li>make top parameters pane fixed</li>
+	<li>add region legend for 1-region race+education plots</li>
+	<li>add option for user to choose what plots they see (like the smartum report filter)</li>
+	<li>add a switch 2 regions button</li>
+	<li>track app usage (# sessions and duration, and write to database)</li>
+	<li>check out session$clientData</li>
+	<li>get current region border to redraw after changes to variable/subvariable (look attempt in v4.8, line 264)</li>
+	<li>add percent symbol after value in list view (data table) for certain variables</li>
+	<li>change legend bins to have "less than x" and "greater than y" for the extreme bins</li>
+	<li>bstooltip won't show for the lock regions switch input</li>
+	<li>modularize variable-addition updates by putting all variables in a nested list</li>
+	<li>cancer plots: switch order of bar charts so first group is on top (and legend still matches)</li>
+	<li>figure out how shiny.com they highlight the code that is triggered during app usage</li>
+	<li>store all the data into a DB, then read from there (this would just be a way to show off for capstone requirements)</li>
+	<li>overlay metro map over DC?</li>
+	<li>have pre-processing file download directly from the internet and read the zipped files. Currently, I've had to manually download and unzip, and preprocessing reads the unzipped files.</li>
+</ol>
+
+<h4>LONG TERM</h4>
+<ol>
+	<li>expand project to all counties across nation</li>
+	<li>move project 2.0 to tableau</li>
+</ol>

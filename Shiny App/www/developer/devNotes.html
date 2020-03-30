@@ -1,0 +1,28 @@
+<h4>Adding a new variable</h4>
+<ul>
+	<li>to add new variable to cancer map 1, make changes in updateMap1LegendBins, updateResult, observeEvent(eventExpr = input$cancerMap1_selectVariable,
+	observeEvent(eventExpr = input$cancerMap1_selectSubvariable</li>
+	<li>current time to add a variable = ~1 hr</li>
+</ul><br>
+
+<h4>Tutorial</h4>
+<ul>
+	<li>to make new tutorial videos, use the app ScreenToGif, which you downloaded from https://www.screentogif.com/</li>
+</ul>
+
+<h4>Other</h4>
+<ul>
+	<li>In the County Health and Rankings Data, you will sometimes see data repeated between years. For example, look at the % Children Eligible for Free Lunch between 2013 and 2014; they're the
+	same values because they actually come from a 2011 survey. This is because in their annual reports, if there is no new survey, they just use the previous
+	year's data. I'm okay with this, but maybe a note should be made here in the app?</li>
+	<li>geojson coordinates
+		<ul>
+			<li>wards go counterclockwise</li>
+			<li>counties go clockwise</li>
+		</ul>
+	</li>
+	<li>data info: before, I tried using bsTooltip, but I found it much more limited than using modal dialogs</li>
+	<li>in shinyapps.io, consider increasig idle time from current 900 sec (15 min) to higher</li>
+	<li>libraries cannot be loaded online in a loop, as I tried in v8.8</li>
+	<li>tried using package esquisse in v10.8 for data explorer, but I find it too complicated and buggy. Instead, using package sortable and creating my custom explorer</li>
+</ul><br>
