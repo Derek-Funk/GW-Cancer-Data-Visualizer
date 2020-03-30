@@ -1,5 +1,5 @@
 #library to deploy app: rsconnect
-#command to deploy app: deployApp(appDir = "C:\\Users\\derek.funk\\Documents\\MSDS\\Capstone\\Cancer_Data_Visualizer\\Shiny_Application\\2_TEST\\Cancer_Data_Visualizer_TEST", account = "gwcancerdatavisualizer")
+#command to deploy app: deployApp(appDir = "C:\\Users\\derek.funk\\Documents\\MSDS\\Capstone\\Cancer_Data_Visualizer\\Shiny_Application\\3_PROD\\Cancer_Data_Visualizer", account = "gwcancerdatavisualizer")
 
 source("global.R")
 
