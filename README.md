@@ -6,6 +6,6 @@ This is a visualizer tool to explore cancer rates and related variables in the D
 ## Links
 App: https://gwcancerdatavisualizer.shinyapps.io/cancer_data_visualizer/ <br>
 Code: https://github.com/Derek-Funk/GW-Cancer-Data-Visualizer <br>
-Author: https://www.linkedin.com/in/derek-funk-5b4734129/
+Author: https://www.linkedin.com/in/derek-funk-5b4734129/ <br>
 
 ![](gif_cancerDataVisualizer.gif)
