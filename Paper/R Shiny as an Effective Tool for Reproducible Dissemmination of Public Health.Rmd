@@ -1,0 +1,369 @@
+---
+title: "R Shiny as an Effective Tool for Reproducible Dissemmination of Public Health Data"
+# author: "Derek Funk"
+output: 
+  html_document:
+      toc: TRUE
+      toc_float: TRUE
+      number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, #code
+  results = 'hide', #output
+  message = FALSE, #status messages
+  warning = FALSE #warnings
+)
+```
+
+```{r}
+# libraries
+library(dplyr)
+library(DT)
+library(leaflet)
+library(RCurl)
+library(sf)
+library(shiny)
+
+```
+
+```{r}
+# global variables
+REF_REGIONS = data.frame(
+  id = c(
+    0,
+    1:8,
+    11001,
+    24017, 24031, 24033,
+    51013, 51059, 51107, 51153,
+    51510, 51600, 51610, 51683, 51685
+  ),
+  name = c(
+    "GWCC Catchment Area",
+    paste("Ward", 1:8),
+    "District of Columbia",
+    "Charles County", "Montgomery County", "Prince George's County", # MD counties
+    "Arlington County", "Fairfax County", "Loudoun County", "Prince William County", # VA counties
+    "City of Alexandria", "City of Fairfax", "City of Falls Church", "City of Manassas", "City of Manassas Park" # independent cities
+  ),
+  zoom_latitude = c(
+    38.8,
+    38.926,38.888,38.938,38.965,38.926,38.88,38.885,38.84,
+    38.888,
+    38.5,39.1,38.84,
+    38.888,38.84,39.1,38.7,
+    38.82,38.84,38.88,38.75,38.77
+  ),
+  zoom_longitude = c(
+    -77.4,
+    -77.03,-77.05,-77.08,-77.03,-77,-77.01,-76.95,-77.01,
+    -77.05,
+    -77.1,-77.2,-76.9,
+    -77.11,-77.3,-77.75,-77.55,
+    -77.06,-77.3,-77.2,-77.51,-77.48
+  ),
+  zoom_level = c(
+    9,
+    14,13,13,13,13,13,13,12,
+    11,
+    10,10,10,
+    10,10,10,10,
+    12,12,12,12,12
+  )
+)
+
+mapboxToken <- "pk.eyJ1IjoiZGVyZWstZnVuayIsImEiOiJjanRzd3g5am4wb2t4M3lxdXM5bzM0ZzBrIn0.FF7p0w7uLe3HeVFMNuxQaw"
+
+download = getURL(url = "https://gwcancerdatavisualizer.s3.amazonaws.com/dmvGeojson.json?accessType=DOWNLOAD")
+GEOJSON_DMV = st_read(download) %>% st_zm()
+```
+
+Derek Funk, M.S. <br>
+Nima Zahadat, Ph.D. <br>
+The George Washington University
+
+# Abstract
+write at the end when you're all done
+
+# Introduction
+Health organizations that provide information to the public often face the issue of communicating data effectively. There are four questions the
+health organization must attempt to address in full.
+
+One: <em>Is the information being presented accurate?</em>
+<br> Human data entry or inadequate data extraction tools can lead to untrustworthy data.
+
+Two: <em>Is there a quick turnaround between when the communication was requested and when it was actually delivered?</em>
+<br>Often, by the time a communication is ingested by the public, there is already a need for an updated version.
+
+Three: <em>Is the information presented in a static report, or is there a self-exploratory tool for the end-user?</em> <br> Self-service tools allow organizations
+to communicate multiple insights at the same time and also engage the public.
+
+Four: <em>Is the information transparently reproducible?</em> <br> Reproducibility gives the viewer trust in what they are consuming and the researcher the
+ability to vet the process. <em>Transparency</em> means it is clear where and how the data was organized, and that it won't take weeks to recreate the project.
+
+Businesses have had tremendous success addressing problems #1-3 by establishing centralized data warehouses with devoted database professionals who create
+automated data ingestion pipelines. On top of this, business intelligence developers can use tools such as Tableau and Power BI to create dashboards that the
+rest of the organization can use without having to constantly request ad hoc reports.
+
+Many health organizations don't have the luxury of having a large team of data professionals that can specialize in each part of the data process. In addition,
+problem #4 is more paramount in health research than in business.
+
+This paper provides a case study of how R Shiny was used at the George Washington Cancer Center (GWCC) to create a self-service tool that allows for exploration of
+cancer rates and related risk factors in the DC-Maryland-Virginia metropolitan area. Other health organizations that don't have an existing data team, but that do have some knowledge in R, may benefit from the use of Shiny in their data communication objectives.
+
+# Literature Review
+talk about scan here
+
+# Research Methodology
+The GWCC serves patients from the following regions:
+<ul>
+  <li>District of Columbia and its eight wards</li>
+  <li>Charles County, Maryland</li>
+  <li>Montgomery County, Maryland</li>
+  <li>Prince George's County, Maryland</li>
+  <li>Arlington County, Virginia</li>
+  <li>Fairfax County, Virginia</li>
+  <li>Loudoun County, Virginia</li>
+  <li>Prince William County, Virginia</li>
+  <li>City of Alexandria, Virginia</li>
+  <li>City of Fairfax, Virginia</li>
+  <li>City of Falls Church, Virginia</li>
+  <li>City of Manassas, Virginia</li>
+  <li>City of Manassas Park, Virginia</li>
+</ul>
+
+The last five regions are <em>independent cities</em>, which are not in the territory of any county and thus must be included separately.
+
+All these regions together constitute what is known as the <em>GWCC Catchment Area</em>.
+
+```{r, results=TRUE}
+geojsonModified = GEOJSON_DMV %>% filter(! region %in% c(0,11001))
+    
+geojsonModified$state = "District of Columbia"
+for(i in 1:length(geojsonModified$state)) {
+  if(substr(geojsonModified$region[i], 1, 2) == 24) {
+    geojsonModified$state[i] = "Maryland"
+  } else if(substr(geojsonModified$region[i], 1, 2) == 51) {
+    geojsonModified$state[i] = "Virginia"
+  }
+}
+
+regionLabels = sprintf(
+  "<strong>%s</strong>",
+  geojsonModified$name
+) %>% lapply(htmltools::HTML)
+
+leaflet(
+  data = geojsonModified,
+  options = leafletOptions(
+    attributionControl = FALSE,
+    minZoom = 9,
+    maxZoom = 14
+  )
+) %>% addProviderTiles("MapBox",
+                   options = providerTileOptions(
+                     id = "mapbox.light",
+                     accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')
+                   )
+  ) %>% addPolygons(
+    weight = 2,
+    opacity = 1,
+    color = "gray",
+    fillColor = "lightsteelblue",
+    dashArray = "1",
+    fillOpacity = 0.7,
+    #hovering gives thick, gray border
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE
+    ),
+    label = regionLabels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto"
+    ),
+    layerId = geojsonModified$name,
+    group = "click.list"
+  )
+```
+
+This project ventured through each of the following high-level stages:
+<ol>
+  <li>data extraction</li>
+  <li>data pre-processing</li>
+  <li>application design</li>
+  <li>application development</li>
+  <li>prototype demos & user feedback</li>
+  <li>iterative enhancements</li>
+  <li>go-live publishing</li>
+</ol>
+
+# Data
+At a high level, all data presented in the visualizer come from one of two groups:
+<ul>
+  <li>Cancer Rates</li>
+  <li>Risk and Protective Factors</li>
+</ul>
+
+Cancer data for all counties, independent cities, and DC are taken from the Centers for Disease Control and Prevention (CDC). The CDC offers 5-year average annual age-adjusted incidence and mortality rates for 27 cancer sites over the time periods 2011-2015 and 2012-2016 for download.
+
+Cancer data for DC wards was specially requested from the DC Cancer Registry. This subset contains 5-year average annual age-adjusted incidence and mortality rates for just the time period 2012-2016 and for only a few cancer sites.
+
+Risk and Protective Factors include many variables that come from categories such as socio-demographics, economic resources, environmental factors, housing and transportation, and health and risk behaviors. For this project, they can also be further segmented based on source:
+<ul>
+  <li>American Community Survey (ACS)</li>
+  <li>Robert Wood Johnson Foundation (RWJF)</li>
+  <li>Environmental Protection Agency (EPA)</li>
+</ul>
+
+ACS data for all counties and independent cities are retrieved by using the US Census Bureau application programming interface (API). All of these variables are 5-year estimates for 2013, 2014, 2015, 2016, and 2017.
+
+ACS data for DC and its wards are available on the web from the DC Office of Planning as download.
+
+RWJF data includes health and risk behaviors for certain counties at limited years. These are availabe on the web as download.
+
+EPA data includes air quality index estimates for all counties and DC for the years 2013, 2014, 2015, 2016, and 2017. These are availabe on the web as download.
+
+Consult the appendix for a detailed listing of each data source and variable, including documentation on the US Census Bureau API.
+
+# Data Analysis
+this is about data pre-processing
+
+# Key Findings
+this is where you include widgets for exploration
+
+# Recommendations
+Data Explorer
+Stage 2 will include Tableau for these reasons...
+Possibilities of extending this to rest of country
+
+# Conclusion
+
+
+# Biography
+<b>Derek Funk</b> is a graduate student in the Data Science Program at The George Washington University. He is interested in data visualization, interactive
+data science, and software development. He has worked as an actuary, business intelligence analyst, and now as a software consultant. In his freetime, he enjoys
+creating personal apps, playing soccer, and catching up on Netflix.<br>
+
+<b>Dr. Nima Zahadat</b> is a professor of data science, information systems security, and digital forensics. His research focus is on studying the Internet of Things, data mining, information visualization, mobile security, security policy management, and memory forensics. He has been teaching since 2001 and has developed and taught over 100 topics. Dr. Zahadat has also been consultant with the federal government agencies, the US Air Force, Navy, Marines, and the Coast Guard. He enjoys teaching, biking, reading, and writing.
+
+# References
+<ol>
+  <li>“SCAN Cancer Data.” Scan 360 | Cancer Data, <a href="https://www.scan360.com/cancer-data" target="_blank"> https://www.scan360.com/cancer-data</a>.</li>
+  <li>U.S. Cancer Statistics Working Group. U.S. Cancer Statistics Data Visualizations Tool, based on November 2018 submission data (1999-2016): U.S. Department of Health and Human Services, Centers for Disease Control and Prevention and National Cancer Institute; <a href="www.cdc.gov/cancer/dataviz" target="_blank">www.cdc.gov/cancer/dataviz</a>, June 2019.</li>
+</ol>
+
+# Appendix
+
+## Data
+
+### List of Data Sources
+```{r, results=TRUE}
+tableOfDataSources = data.frame(
+  "Variable Group" = c(
+    "Cancer Data",
+    "Cancer Data",
+    "Risk & Protective Factors",
+    "Risk & Protective Factors",
+    "Health & Risk Behaviors",
+    "Air Quality Index"
+  ),
+  Region = c(
+    "Counties, Independent Cites, and DC",
+    "DC Wards",
+    "Counties and Independent Cities",
+    "DC and DC Wards",
+    "Counties",
+    "Counties"
+  ),
+  Source = c(
+    "CDC",
+    "DC Cancer Registry",
+    "ACS",
+    "ACS",
+    "RWJF",
+    "EPA"
+  ),
+  Method = c(
+    "File Download",
+    "Manual Request",
+    "API",
+    "File Download",
+    "File Download",
+    "File Download"
+  ),
+  URL = c(
+    "<a href='https://www.cdc.gov/cancer/uscs/dataviz/download_data.htm' target='_blank'>https://www.cdc.gov/cancer/uscs/dataviz/download_data.htm</a>",
+    "<a href='https://dchealth.dc.gov/service/cancer-registry-0' target='_blank'>https://dchealth.dc.gov/service/cancer-registry-0</a>",
+    "<a href='https://api.census.gov/data.html' target='_blank'>https://api.census.gov/data.html</a>",
+    "<a href='https://planning.dc.gov/page/american-community-survey-acs-estimates' target='_blank'>https://planning.dc.gov/page/american-community-survey-acs-estimates</a>",
+    "<a href='https://www.countyhealthrankings.org/app/' target='_blank'>https://www.countyhealthrankings.org/app/</a>",
+    "<a href='https://aqs.epa.gov/aqsweb/airdata/download_files.html' target='_blank'>https://aqs.epa.gov/aqsweb/airdata/download_files.html</a>"
+  ),
+  check.names = FALSE
+)
+datatable(tableOfDataSources, options = list(dom = 't'), escape = FALSE)
+```
+
+<br>
+
+### List of Variables
+```{r, results=TRUE}
+variableNames = c(
+  "Incidence Rate", "Mortality Rate",
+  "Educational Attainment", "Ethnicity", "Foreign-Born", "Main Language Spoken at Home",
+                           "Median Age", "Population", "Race",
+  "Below Poverty Level", "Health Insurance Coverage", "Median Income", "Unemployment Rate",
+  "Housing Tenure", "Rent > 30% of Household Income", "Vehicles Per Housing Unit",
+  "% Children Eligible for Free Lunch", "% Diabetic", "% Diabetic Screening",
+                                "% Excessive Drinking", "HIV Prevalence", "Homicide Rate", "% Inadequate Social Support",
+                                "% Limited Access to Healthy Foods", "% Mammography Screening", "% Obesity",
+                                "% Poor/Fair Health", "% Physically Inactive", "Premature Mortality Rate",
+                                "% Single-Parent Households", "% Smoking", "Violent Crime Rate",
+  "Air Quality Index"
+)
+variableGroupNames = c(
+  rep("Cancer Data",2),
+  rep("Risk & Protective Factors",14),
+  rep("Health & Risk Behaviors",16),
+  "Air Quality Index"
+)
+tableOfVariables = data.frame(
+  Variable = variableNames,
+  "Variable Group" = variableGroupNames,
+  check.names = FALSE
+)
+datatable(tableOfVariables)
+```
+
+<br>
+
+### List of Cancer Sites
+```{r, results=TRUE}
+listOfCancerSites = data.frame(
+  "Cancer Site" = sort(c("All Cancers", "Brain Cancer", "Cervical Cancer", "Colorectal Cancer", "Uterine Cancer",
+                    "Esophageal Cancer", "Female Breast Cancer", "Hodgkin Lymphoma", "Kaposi Sarcoma",
+                    "Kidney Cancer", "Laryngeal Cancer", "Leukemia", "Liver Cancer", "Lung Cancer",
+                    "Melanoma", "Mesothelioma", "Myeloma", "Non-Hodgkin Lymphoma", "Oral Cancer",
+                    "Ovarian Cancer", "Pancreatic Cancer", "Stomach Cancer", "Thyroid Cancer",
+                    "Bladder Cancer", "Male Breast Cancer", "Prostate Cancer", "Testicular Cancer")),
+  check.names = FALSE
+)
+datatable(listOfCancerSites)
+```
+
+## How to Reproduce this Entire Project
+
+### How to Reproduce the Data Pre-Processing
+
+### How to Reproduce the Shiny Application
+
+### How to Reproduce this Interactive Paper
+<ol>
+  <li></li>
+</ol>
