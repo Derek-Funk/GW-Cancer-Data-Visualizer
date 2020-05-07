@@ -5,6 +5,7 @@ This is a visualizer tool to explore cancer rates and related variables in the D
 
 ### Links
 App: https://gwcancerdatavisualizer.shinyapps.io/cancer_data_visualizer/ <br>
+Paper: https://rpubs.com/Derek_Funk/R-Shiny-as-an-Effective-Tool-for-Reproducible-Dissemmination-of-Public-Health <br>
 Author: https://www.linkedin.com/in/derek-funk-5b4734129/	<br>
 
 ![](gif_cancerDataVisualizer.gif)
