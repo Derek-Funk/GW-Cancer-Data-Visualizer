@@ -1,0 +1,524 @@
+---
+title: "R Shiny as an Effective Tool for Reproducible Dissemmination of Public Health Data"
+# author: "Derek Funk"
+output: 
+  html_document:
+      toc: TRUE
+      toc_float: TRUE
+      number_sections: TRUE
+# runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, #code
+  results = 'hide', #output
+  message = FALSE, #status messages
+  warning = FALSE #warnings
+)
+```
+
+```{r}
+# libraries
+library(dplyr)
+library(DT)
+library(leaflet)
+library(RCurl)
+library(sf)
+library(visNetwork)
+```
+
+```{r}
+mapboxToken <- "pk.eyJ1IjoiZGVyZWstZnVuayIsImEiOiJjanRzd3g5am4wb2t4M3lxdXM5bzM0ZzBrIn0.FF7p0w7uLe3HeVFMNuxQaw"
+download = "https://gwcancerdatavisualizer.s3.amazonaws.com/dmvGeojson.json"
+GEOJSON_DMV = st_read(download) %>% st_zm()
+
+```
+
+Derek Funk, M.S. <br>
+Nima Zahadat, Ph.D. <br>
+The George Washington University
+
+# Abstract
+State cancer registries are required by law to annually report cancer incidence and mortality to federal cancer organizations for review. Local
+cancer centers face obstacles in being able to retrieve and present this data that is relevant to their patient population. The traditional
+solution to this problem has been to manually compile static reports that are often either out of date or cumbersome to create. This project focuses
+on Shiny, a package for the R programming language that allows for web development, and how it was used by the George Washington Cancer Center
+to create a cancer data visualizer for its catchment area. Shiny allows for automation of report development, with a large emphasis on reproducibility.
+
+<em>Keywords:</em> cancer, risk & protective factors, George Washington Cancer Center, R, Shiny, health informatics, research reproducibility
+
+# Introduction
+Health organizations that provide information to the public often face the issue of communicating data effectively. There are five questions the
+health organization must attempt to address in full.
+
+One: <em>Is the information being presented accurate?</em>
+<br> Human data entry or inadequate data extraction tools can lead to untrustworthy data.
+
+Two: <em>Is there a quick turnaround between when the communication was requested and when it was actually delivered?</em>
+<br>Often, by the time a communication is ingested by the public, there is already a need for an updated version.
+
+Three: <em>Is the information presented in a static report, or is there a self-exploratory tool for the end-user?</em> <br> Self-service tools allow organizations
+to communicate multiple insights at the same time and also engage the public.
+
+Four: <em>Is the information transparently reproducible?</em> <br> Reproducibility gives the viewer trust in what they are consuming and the researcher the
+ability to vet the process. <em>Transparency</em> means it is clear where and how the data was organized, and that it will not take weeks to recreate the project.
+
+Five: <em>What types of privacy concerns exist with the reported data?</em> <br> Due to patient privacy, many health data sources must be suppressed
+at the individual level.
+
+Businesses have had tremendous success addressing problems #1-3 by establishing centralized data warehouses with devoted database professionals who create
+automated data ingestion pipelines. On top of this, business intelligence developers can use tools such as Tableau and Power BI to create dashboards that the
+rest of the organization can use without having to constantly create ad hoc reports.
+
+Many health organizations do not have the luxury of having a large team of data professionals that can specialize in each part of the data process. In addition,
+problem #4 is more paramount in health research than in business.
+
+This paper provides a case study of how R Shiny was used at the George Washington Cancer Center (GWCC) to create a self-service tool that allows for exploration of
+cancer rates and related risk factors in the DC-Maryland-Virginia metropolitan area. Other health organizations that do not have an existing data team, but that do have some knowledge in R, may benefit from the use of Shiny in their data communication objectives.
+
+# Literature Review
+Many health organizations are investing in analytics to report their cancer data in ways that are more compelling and useful. A high-level example is the Centers for Disease Control and Prevention (CDC), which annually aggregates cancer incidence and mortality rates from all U.S. states. In addition to making this information publicly available, they have a cancer data visualizer that helps make the ingestion of this data more palatable [1].
+
+A local example concerns the University of Miami Sylvester Comprehensive Cancer Center, which created a tool called <em>SCAN360</em> that visualizes various cancer rates and related factors across Florida's counties and neighborhoods [2]. The tool was used by the cancer center's outreach team to discover a high rate of cervical cancer in one of their neighborhoods, from which they were allowed to actively flag and monitor the area.
+
+In both of these examples, one of the main challenges behind attaining the most complete information has to do with patient privacy. The Health
+Insurance Portability and Accountability Act of 1996 (HIPAA) includes national rules regarding how patient information can be shared, including
+that of cancer data [3]. For example, the CDC shows cancer rates for various combinations of cancer sites, gender, race, and state. However, at a certain
+granularity the counts become so low that the risk of patient identification begins to manifest. In compliance with HIPAA, the CDC must suppress
+the public information if the counts become lower than 16 cases. Similarly, the DC Cancer Registry must suppress their data when the counts
+are lower than 10 cases.
+
+Another challenge with compiling cancer data has to do with the time and effort involved. Since 1993, cancer has been categorized as a "reportable
+disease" [4]. In order to receive 5-year cancer control funding grants, state cancer registries must compile and send their cancer data every year
+for review by federal cancer organizations such as the CDC and National Cancer Institute. This intensive review process results in a multi-year lag between the time of data incidence
+and time of data reporting. Consumers of this kind of data must have the understanding that their outreach actions are always based on information
+that did not occur in the immediate past.
+
+In addition to keeping up to date with local cancer rates, cancer outreach teams are heavily invested in keeping tabs on a host of socioeconomic
+factors. These variables are called "risk & protective factors" and span many categories, including demographics, income and employment,
+environmental factors, and risk behaviors. Every catchment area constitutes a very different risk & protective factors cancer profile. It is the goal of every outreach team to associate the high prevalence of specific cancer sites with certain risk & protective factors, and see how these
+relationships have changed over time across their sub-regions.
+
+Many analytic tools are used in the public health sector. Due to the prevalence of the R programming language in healthcare, the R package Shiny has been
+used for various analytic capabilities, including the <em>SCAN360</em> project. GWCC made the active decision to use Shiny in creating their
+cancer data visualizer to make cancer data available to local professionals and the public.
+
+# Research Methodology
+The GWCC serves patients from the following regions:
+<ul>
+  <li>District of Columbia and its eight wards</li>
+  <li>Charles County, Maryland</li>
+  <li>Montgomery County, Maryland</li>
+  <li>Prince George's County, Maryland</li>
+  <li>Arlington County, Virginia</li>
+  <li>Fairfax County, Virginia</li>
+  <li>Loudoun County, Virginia</li>
+  <li>Prince William County, Virginia</li>
+  <li>City of Alexandria, Virginia</li>
+  <li>City of Fairfax, Virginia</li>
+  <li>City of Falls Church, Virginia</li>
+  <li>City of Manassas, Virginia</li>
+  <li>City of Manassas Park, Virginia</li>
+</ul>
+
+The last five regions are <em>independent cities</em>, which are not in the territory of any county and thus must be included separately.
+
+All these regions together constitute what is known as the <em>GWCC Catchment Area</em> seen below.
+
+```{r, results=TRUE}
+geojsonModified = GEOJSON_DMV %>% filter(! region %in% c(0,11001))
+
+geojsonModified$state = "District of Columbia"
+for(i in 1:length(geojsonModified$state)) {
+  if(substr(geojsonModified$region[i], 1, 2) == 24) {
+    geojsonModified$state[i] = "Maryland"
+  } else if(substr(geojsonModified$region[i], 1, 2) == 51) {
+    geojsonModified$state[i] = "Virginia"
+  }
+}
+
+regionLabels = sprintf(
+  "<strong>%s</strong>",
+  geojsonModified$name
+) %>% lapply(htmltools::HTML)
+
+leaflet(
+  data = geojsonModified,
+  options = leafletOptions(
+    attributionControl = FALSE,
+    minZoom = 9,
+    maxZoom = 14
+  )
+) %>% addProviderTiles("MapBox",
+                   options = providerTileOptions(
+                     id = "mapbox.light",
+                     accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN')
+                   )
+  ) %>% addPolygons(
+    weight = 2,
+    opacity = 1,
+    color = "gray",
+    fillColor = "lightsteelblue",
+    dashArray = "1",
+    fillOpacity = 0.7,
+    #hovering gives thick, gray border
+    highlight = highlightOptions(
+      weight = 5,
+      color = "#666",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE
+    ),
+    label = regionLabels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto"
+    ),
+    layerId = geojsonModified$name,
+    group = "click.list"
+  )
+```
+
+This project ventured through each of the following high-level stages:
+<ol>
+  <li>Data sources identification</li>
+  <li>Data extraction</li>
+  <li>Data pre-processing</li>
+  <li>Application design</li>
+  <li>Application development</li>
+  <li>Prototype demos & user feedback</li>
+  <li>Iterative enhancements</li>
+  <li>Go-live publishing</li>
+</ol>
+
+# Data
+At a high level, all data presented in the visualizer come from one of two groups:
+<ul>
+  <li>Cancer Rates</li>
+  <li>Risk & Protective Factors</li>
+</ul>
+
+Cancer data for all counties, independent cities, and DC are taken from the CDC. The CDC offers 5-year average annual age-adjusted incidence and mortality rates for 27 cancer sites over the time periods 2011-2015 and 2012-2016 for download.
+
+Cancer data for DC wards was specially requested from the DC Cancer Registry [5]. This subset contains 5-year average annual age-adjusted incidence and mortality rates for just the time period 2012-2016 and for only a few cancer sites that have enough reportable cases.
+
+Risk & protective factors include many variables that come from categories such as socio-demographics, economic resources, environmental factors, housing and transportation, and health and risk behaviors. For this project, they can also be categorized based on source:
+<ul>
+  <li>American Community Survey (ACS)</li>
+  <li>Robert Wood Johnson Foundation (RWJF)</li>
+  <li>Environmental Protection Agency (EPA)</li>
+</ul>
+
+ACS data for all counties and independent cities are retrieved by using the US Census Bureau application programming interface (API) [6]. All of these variables are 5-year estimates for 2013, 2014, 2015, 2016, and 2017.
+
+ACS data for DC and its wards are available on the web from the DC Office of Planning for download [7].
+
+RWJF data includes health and risk behaviors for certain counties at limited years. These are availabe on the web for download [8].
+
+EPA data includes air quality index estimates for all counties and DC for the years 2013, 2014, 2015, 2016, and 2017. These are availabe on the web for download [9].
+
+Consult the appendix for a detailed listing of each data source and variable, including documentation on the US Census Bureau API.
+
+# Data Analysis
+Two simple yet important questions present themselves in the context of data pre-processing:
+<ol>
+  <li>How should the data be retrieved?</li>
+  <li>How should the data be formatted?</li>
+</ol>
+
+In this project, R was used to handle both of these questions. However, in more complicated architectures the answers to these questions
+may warrant the use of dozens of technologies. In general, the tools to use are ones that are efficient and reliable, but they may differ by organization based on existing skillsets.
+
+The answer to question #1 in this project involved a combination of downloading and reading flat files, as well as accessing an API. Of all the data sources, the US Census Bureau
+was the only one that was able to provide information via an API. One may assume that the general answer to question #1 is to always use an API
+(if it is available) over flat files, since it provides the user with more control. However, flat files do have the
+advantage over APIs in that once they are downloaded, they do not change. APIs, on the other hand, are subject to redefinitions. In fact, there
+are a handful of variables in the US Census Bureau whose variable keys changed at a certain time point, presumably due to API redefinition. This
+was only caught after thorough testing and requires a code change to account for the different variable keys.
+
+The answer to question #2 in this project was to process the raw data into <em>tidy data</em>, where information is stored in a data frame
+that has one variable per column and one observation per row. The main point of Hadley Wickham's paper
+"Tidy Data" is that while many raw data sources are well-presented and easy to consume for humans, this does not make the data easy to process
+for computers [10]. Many of the raw data sources in this project had inconsistently named files, inconsistently named variables, or shifting
+cell locations, making it difficult to reuse processing functions. The eventual R data pipeline was very custom in producing
+formatted tidy files that the Shiny app could read.
+
+Below is a high-level diagram of how the raw data sources flow to the visualizer. Click on and drag the nodes to read the node labels more easily.
+
+```{r, results=TRUE}
+nodes = data.frame(
+  id = 1:9,
+  label = c(
+    "CDC - Counties, Independent Cities, and DC (text files)",
+    "DC Cancer Registry - DC wards (Excel file)",
+    "ACS - DC and its wards (Excel files)",
+    "ACS - Counties and Independent Cities (US Census Bureau API)",
+    "EPA - Counties and DC (csv files)",
+    "RWJF - Counties (Excel files)",
+    "tidy Cancer Data file",
+    "tidy Risk & Protective Factors file",
+    "Shiny App"
+  ),
+  shape = c(rep("dot",6), rep("square",2), "star"),
+  size = 15,
+  color = c(rep("blue",6), rep("red",2), "yellow")
+)
+edges = data.frame(
+  from = 1:8,
+  to = c(rep(7,2), rep(8,4), rep(9,2))
+)
+
+visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE) %>%
+  visEdges(arrows = list(to = list(enabled = TRUE)))
+```
+
+The main advantage of having these tidy data files is that the Shiny application is able to efficiently read them. Very minor data processing is done within the application to maintain load speed. In addition, the structure of these tidy files allows for future inclusion of new data with minimal
+required code updates within the application.
+
+# Key Findings
+This section outlines some of the key observations made using the Shiny app. The full visualizer can be explored at
+<a href="https://gwcancerdatavisualizer.shinyapps.io/cancer_data_visualizer/" target="_blank">https://gwcancerdatavisualizer.shinyapps.io/cancer_data_visualizer/</a>.
+
+This first widget below shows one of the visualizer's cancer maps, which shows both cancer rates and risk & protective factors for the
+time period 2012-2016. Use the filters at the top to change the map view to any specific region, variable, and variable category. Any region on the map can be hovered over or clicked on for more information. The <em>List View</em> displays the same information as the <em>Map View</em> in a
+grid. The <em>Show DC Wards</em> toggle can be turned on to view values for the wards of DC.
+
+```{r, echo=FALSE}
+knitr::include_app(url = "https://derek-funk.shinyapps.io/cancer_data_visualizer_cancer_map/", height = "1080px")
+```
+
+Geographically, it is evident that cancer incidence and mortality are highest in the southeast of the GWCC Catchment Area. This includes the regions of Charles County, Prince George's County, and DC (primarily wards 7 and 8). These regions have a high proportion of young, African-American
+families who are impacted by lower education and employment opportunities, lower household incomes, and less private health insurance. As a result, GWCC is particularly concerned in addressing the needs of its cancer patients from these areas, especially wards 7 and 8.
+
+This next widget focuses on cancer incidence and mortality rates, but allows for a few more data views. These include another time period of
+2011-2015, a breakdown by race, and the ability to compare rates across regions or cancer sites. Use the filters and then click <em>Update</em> to
+see the plot change values. The <em>Select Chart</em> feature can be used to switch the graph between incidence and mortality rates.
+
+```{r, echo=FALSE}
+knitr::include_app(url = "https://derek-funk.shinyapps.io/cancer_data_visualizer_detailed_cancer_statistics/", height = "1180px")
+```
+
+In general, the most problematic cancer sites both in terms of incidence and mortality include female breast, prostate, lung, and colorectal cancer.
+African Americans suffer the most in comparison to other races across most cancer sites and regions of the GWCC Catchment Area.
+
+This third widget shows risk & protective factors for all the other available years. This tool also allows the option to compare a variable
+between any two regions. Like the previous widget, click on one of the options in the <em>Select Chart</em> box to view a different set of plots.
+
+```{r, echo=FALSE}
+knitr::include_app(url = "https://derek-funk.shinyapps.io/cancer_data_visualizer_risk_and_protective_factors/", height = "1180px")
+```
+
+A similar observation can be made here as in the cancer map, which is that the southeast region of the GWCC Catchment Area warrants the most
+concern in terms of access to healthcare, income, and employment. The tool exhibits these patterns consistently throughout the years.
+
+# Recommendations
+The existing cancer data visualizer written in Shiny represents an initial project stage at the GWCC. There are several directions that the GWCC
+is interested in taking in the future.
+
+First, although the cancer data visualizer is able to show recent cancer rates and risk & protective factors, it can be difficult to see exactly how
+some of these variables are changing over time in relation to each other. The widget below represents a portion of the visualizer's <em>Data Explorer</em> tab.
+This last feature of the visualizer is the newest prototype feature, and it was intended to answer some of these questions regarding variable
+relationships over time. Further work will be done in the visualizer, including the enhancement of this feature and introducing custom calculations
+throughout the app.
+
+```{r, echo=FALSE}
+knitr::include_app(url = "https://derek-funk.shinyapps.io/cancer_data_visualizer_data_explorer/", height = "1170px")
+```
+
+Second, building and maintaining a Shiny app requires some R experience. Although a Shiny app is very powerful in an organization that has an
+experienced Shiny developer, it can be difficult to share the development work with many people. The next phase of this project may include a
+transition to Tableau, which has many built-in features that are easier to learn for new contributors.
+
+Lastly, although the GWCC is mainly focused on its catchment area, there is interest in expanding this type of visualizer to other regions in the
+country. Many of the sources used in this project already include data for regions outside of the GWCC Catchment Area, and much of the work here
+would constitute generalizing the application.
+
+# Summary
+The main focus of this project was to present a technical solution to a data challenge within a cancer health organization. Cancer centers like
+the GWCC face issues such as data accuracy, reporting timeliness, reporting methodology, reproducibility, and patient privacy. In order to address
+these concerns, they all require the use of technologies that provide reliable and consistent answers. Ultimately, the GWCC chose R Shiny as the tool to visualize cancer rates and risk & protective factors across the GWCC Catchment Area.
+
+In general, health organizations may find value in using Shiny if they have enough experience with R development. Otherwise, alternative
+self-service tools such as Tableau can ease the transition to report development without having to largely invest in learning a new programming language. Either approach will enable organizations to report their data more accurately, quickly, and transparently.
+
+# Biography
+<b>Derek Funk</b> is a graduate student in the Data Science Program at The George Washington University. He is interested in data visualization, interactive
+data science, and software development. He has worked as an actuary, business intelligence analyst, and now as a software consultant. In his freetime, he enjoys
+creating personal apps, playing soccer, and catching up on Netflix.<br>
+
+<b>Dr. Nima Zahadat</b> is a professor of data science, information systems security, and digital forensics. His research focus is on studying the Internet of Things, data mining, information visualization, mobile security, security policy management, and memory forensics. He has been teaching since 2001 and has developed and taught over 100 topics. Dr. Zahadat has also been a consultant with the federal government agencies, the US Air Force, Navy, Marines, and the Coast Guard. He enjoys teaching, biking, reading, and writing.
+
+# References
+[1] "USCS Data Visualizations", Gis.cdc.gov, 2020. [Online]. Available: <a href="https://gis.cdc.gov/Cancer/USCS/DataViz.html" target="_blank">https://gis.cdc.gov/Cancer/USCS/DataViz.html</a>. [Accessed: 04- May- 2020].
+
+[2] "Scan 360 | Cancer Data", Scan360.com, 2020. [Online]. Available: <a href="https://www.scan360.com/cancer-data" target="_blank">https://www.scan360.com/cancer-data</a>. [Accessed: 04- May- 2020].
+
+[3] "HIPAA for Professionals", HHS.gov, 2020. [Online]. Available: <a href="https://www.hhs.gov/hipaa/for-professionals/index.html" target="_blank">https://www.hhs.gov/hipaa/for-professionals/index.html</a>. [Accessed: 04- May- 2020].
+
+[4] "U.S. Cancer Statistics Data Visualizations Tool Technical Notes | CDC", Cdc.gov, 2020. [Online]. Available: <a href="https://www.cdc.gov/cancer/uscs/technical_notes/index.htm" target="_blank">https://www.cdc.gov/cancer/uscs/technical_notes/index.htm</a>. [Accessed: 04- May- 2020].
+
+[5] "Cancer Registry | doh", Dchealth.dc.gov, 2020. [Online]. Available: <a href="https://dchealth.dc.gov/service/cancer-registry-0" target="_blank">https://dchealth.dc.gov/service/cancer-registry-0</a>. [Accessed: 04- May- 2020].
+
+[6] US Bureau, "Developers", The United States Census Bureau, 2020. [Online]. Available: <a href="https://www.census.gov/developers/" target="_blank">https://www.census.gov/developers/</a>. [Accessed: 04- May- 2020].
+
+[7] "American Community Survey (ACS) Estimates | op", Planning.dc.gov, 2020. [Online]. Available: <a href="https://planning.dc.gov/page/american-community-survey-acs-estimates" target="_blank">https://planning.dc.gov/page/american-community-survey-acs-estimates</a>. [Accessed: 04- May- 2020].
+
+[8] "How Healthy is your County? | County Health Rankings", County Health Rankings & Roadmaps, 2020. [Online]. Available: <a href="https://www.countyhealthrankings.org/" target="_blank">https://www.countyhealthrankings.org/</a>. [Accessed: 04- May- 2020].
+
+[9] "Download Files | AirData | US EPA", Aqs.epa.gov, 2020. [Online]. Available: <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html" target="_blank">https://aqs.epa.gov/aqsweb/airdata/download_files.html</a>. [Accessed: 04- May- 2020].
+
+[10] H. Wickham, <a href="https://vita.had.co.nz/papers/tidy-data.pdf" target="_blank">"Tidy Data"</a>, Journal of Statistical Software, vol. 59, no. 10, 2014. Available: 10.18637/jss.v059.i10.
+
+[11] "DataTables Options", Rstudio.github.io, 2020. [Online]. Available: <a href="https://rstudio.github.io/DT/options.html" target="_blank">https://rstudio.github.io/DT/options.html</a>. [Accessed: 04- May- 2020].
+
+[12] "GeoJSON and KML data for the United States", Eric Celeste, 2020. [Online]. Available: <a href="https://eric.clst.org/tech/usgeojson/" target="_blank">https://eric.clst.org/tech/usgeojson/</a>. [Accessed: 04- May- 2020].
+
+[13] "Shiny", Shiny.rstudio.com, 2020. [Online]. Available: <a href="https://shiny.rstudio.com/" target="_blank">https://shiny.rstudio.com/</a>. [Accessed: 04- May- 2020].
+
+[14] "Tidyverse", Tidyverse.org, 2020. [Online]. Available: <a href="https://www.tidyverse.org/" target="_blank">https://www.tidyverse.org/</a>. [Accessed: 04- May- 2020].
+
+[15] H. Wickham and G. Grolemund, <a href="https://r4ds.had.co.nz/" target="_blank">R for Data Science</a>. O'Reilly, 2017.
+
+# Appendix
+
+## Data
+
+### List of Data Sources
+```{r, results=TRUE}
+tableOfDataSources = data.frame(
+  "Variable Group" = c(
+    "Cancer Data",
+    "Cancer Data",
+    "Risk & Protective Factors",
+    "Risk & Protective Factors",
+    "Health & Risk Behaviors",
+    "Air Quality Index"
+  ),
+  Region = c(
+    "Counties, Independent Cites, and DC",
+    "DC Wards",
+    "Counties and Independent Cities",
+    "DC and DC Wards",
+    "Counties",
+    "Counties"
+  ),
+  Source = c(
+    "CDC",
+    "DC Cancer Registry",
+    "ACS",
+    "ACS",
+    "RWJF",
+    "EPA"
+  ),
+  Method = c(
+    "File Download",
+    "Manual Request",
+    "API",
+    "File Download",
+    "File Download",
+    "File Download"
+  ),
+  URL = c(
+    "<a href='https://www.cdc.gov/cancer/uscs/dataviz/download_data.htm' target='_blank'>https://www.cdc.gov/cancer/uscs/dataviz/download_data.htm</a>",
+    "<a href='https://dchealth.dc.gov/service/cancer-registry-0' target='_blank'>https://dchealth.dc.gov/service/cancer-registry-0</a>",
+    "<a href='https://api.census.gov/data.html' target='_blank'>https://api.census.gov/data.html</a>",
+    "<a href='https://planning.dc.gov/page/american-community-survey-acs-estimates' target='_blank'>https://planning.dc.gov/page/american-community-survey-acs-estimates</a>",
+    "<a href='https://www.countyhealthrankings.org/app/' target='_blank'>https://www.countyhealthrankings.org/app/</a>",
+    "<a href='https://aqs.epa.gov/aqsweb/airdata/download_files.html' target='_blank'>https://aqs.epa.gov/aqsweb/airdata/download_files.html</a>"
+  ),
+  check.names = FALSE
+)
+datatable(tableOfDataSources, options = list(dom = 't'), escape = FALSE)
+```
+
+<br>
+
+### List of Variables
+```{r, results=TRUE}
+variableNames = c(
+  "Incidence Rate", "Mortality Rate",
+  "Educational Attainment", "Ethnicity", "Foreign-Born", "Main Language Spoken at Home",
+                           "Median Age", "Population", "Race",
+  "Below Poverty Level", "Health Insurance Coverage", "Median Income", "Unemployment Rate",
+  "Housing Tenure", "Rent > 30% of Household Income", "Vehicles Per Housing Unit",
+  "% Children Eligible for Free Lunch", "% Diabetic", "% Diabetic Screening",
+                                "% Excessive Drinking", "HIV Prevalence", "Homicide Rate", "% Inadequate Social Support",
+                                "% Limited Access to Healthy Foods", "% Mammography Screening", "% Obesity",
+                                "% Poor/Fair Health", "% Physically Inactive", "Premature Mortality Rate",
+                                "% Single-Parent Households", "% Smoking", "Violent Crime Rate",
+  "Air Quality Index"
+)
+variableGroupNames = c(
+  rep("Cancer Data",2),
+  rep("Risk & Protective Factors",14),
+  rep("Health & Risk Behaviors",16),
+  "Air Quality Index"
+)
+tableOfVariables = data.frame(
+  Variable = variableNames,
+  "Variable Group" = variableGroupNames,
+  check.names = FALSE
+)
+datatable(tableOfVariables)
+```
+
+<br>
+
+### List of Cancer Sites
+```{r, results=TRUE}
+listOfCancerSites = data.frame(
+  "Cancer Site" = sort(c("All Cancers", "Brain Cancer", "Cervical Cancer", "Colorectal Cancer", "Uterine Cancer",
+                    "Esophageal Cancer", "Female Breast Cancer", "Hodgkin Lymphoma", "Kaposi Sarcoma",
+                    "Kidney Cancer", "Laryngeal Cancer", "Leukemia", "Liver Cancer", "Lung Cancer",
+                    "Melanoma", "Mesothelioma", "Myeloma", "Non-Hodgkin Lymphoma", "Oral Cancer",
+                    "Ovarian Cancer", "Pancreatic Cancer", "Stomach Cancer", "Thyroid Cancer",
+                    "Bladder Cancer", "Male Breast Cancer", "Prostate Cancer", "Testicular Cancer")),
+  check.names = FALSE
+)
+datatable(listOfCancerSites)
+```
+
+## How to Reproduce this Entire Project
+Visit <a href="https://github.com/Derek-Funk/GW-Cancer-Data-Visualizer" target="_blank">https://github.com/Derek-Funk/GW-Cancer-Data-Visualizer</a> for all code and supporting files required to reproduce this project.
+
+### How to Reproduce the Data Pre-Processing
+There are two data pipelines:
+<ol>
+  <li>Process data from the CDC and DC Cancer Registry into one master cancer data file</li>
+  <li>Process data from the ACS, RWJF, and EPA into one master risk & protective factors data file</li>
+</ol>
+
+These pipelines can be reproduced as follows:
+<ol>
+  <li>Download the <em>Data</em> folder.</li>
+  <li>Open the <em>preProcessing_createCancerMasterDataFile_v5.R</em> file.</li>
+    <ol>
+      <li>Replace all file paths with relevant local paths.</li>
+      <li>Run the entire script. This script takes about 16 minutes.</li>
+    </ol>
+  <li>Open the <em>preProcessing_createNonCancerMasterDataFile_v11.R</em> file.</li>
+    <ol>
+      <li>Replace all file paths with relevant local paths.</li>
+      <li>Run the entire script. This script takes about 25 minutes.</li>
+    </ol>
+  <li>The final master files are titled <em>masterDataFile_cancer_countyWard.csv</em> and <em>masterDataFile_nonCancer_countyWard.csv</em>.
+</ol>
+
+<em>NOTE: If you wish to retrieve the raw data files yourself, consult the <em>List of Data Sources</em> appendix subsection.</em>
+
+### How to Reproduce the Shiny Application
+<ol>
+  <li>Download the <em>Shiny App</em> folder.</li>
+  <li>In RStudio, open either the <em>global.R</em> or <em>app.R</em> file. Click 'Run App' in the upper-right of the Source pane.</li>
+</ol>
+
+<em>NOTE: These steps are to run the Shiny app on a local machine. If you wish to reproduce this app on <a href="https://www.shinyapps.io/" target="_blank">https://www.shinyapps.io/</a>, visit <a href="https://docs.rstudio.com/shinyapps.io/index.html" target="_blank">https://docs.rstudio.com/shinyapps.io/index.html</a> on how to deploy the app to the cloud.</em>
+
+### How to Reproduce this Interactive Paper
+<ol>
+  <li>In the <em>Paper</em> folder, download the R Markdown file.</li>
+  <li>In RStudio, knit this document (File -> Knit Document). This code will generate the final HTML paper.</li>
+</ol>
