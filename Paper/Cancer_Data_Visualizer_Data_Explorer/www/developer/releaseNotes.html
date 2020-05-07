@@ -1,0 +1,894 @@
+<h4>16.1</h4>
+<ol>
+	<li>current</li>
+</ol><br>
+
+<h4>16.0</h4>
+<ol>
+	<li>Reverted detailed cancer statistics race & ethnicity option to v15.8.</li>
+	<li>Kept feature that disallows you to choose null for this checkbox.</li>
+</ol><br>
+
+<h4>15.9</h4>
+<ol>
+	<li>Update detailed cancer statistics race & ethnicity option to only allow Everyone xor specific races.</li>
+</ol><br>
+
+<h4>15.8</h4>
+<ol>
+	<li>Fixed cancer map 2 region input would not expand to include wards when ward granularity was toggled on.</li>
+</ol><br>
+
+<h4>15.7</h4>
+<ol>
+	<li>Added an info link on what DC wards are.</li>
+</ol><br>
+
+<h4>15.6</h4>
+<ol>
+	<li>Updated median income plot to go higher.</li>
+	<li>Fixed median income values for wards 2014-2015.</li>
+</ol><br>
+
+<h4>15.5</h4>
+<ol>
+	<li>Fixed labels for % Limited Access to Health Foods.</li>
+</ol><br>
+
+<h4>15.4</h4>
+<ol>
+	<li>Improved cancer map legend bins for violent crime rate.</li>
+</ol><br>
+
+<h4>15.3</h4>
+<ol>
+	<li>Fixed cancer map special formatting for population and median income.</li>
+</ol><br>
+
+<h4>15.2</h4>
+<ol>
+	<li>Replaced IS_TESTING with DEBUG_MODE.</li>
+</ol><br>
+
+<h4>15.1</h4>
+<ol>
+	<li>Replaced "DMV Catchment Area" with "GWCC Catchment Area".</li>
+</ol><br>
+
+<h4>15.0</h4>
+<ol>
+	<li>Updated tutorial gifs.</li>
+</ol><br>
+
+<h4>14.9</h4>
+<ol>
+	<li>Changed help to tutorial, and added a hover over it.</li>
+</ol><br>
+
+<h4>14.8</h4>
+<ol>
+	<li>Made fixes all other tabs besides cancer maps to accommodate for independent cities.</li>
+</ol><br>
+
+<h4>14.7</h4>
+<ol>
+	<li>Changed independent city names to "City of...".</li>
+	<li>New zoom coordinates for independent cities.</li>
+</ol><br>
+
+<h4>14.6</h4>
+<ol>
+	<li>Updated most of server file for independent cities.</li>
+</ol><br>
+
+<h4>14.5</h4>
+<ol>
+	<li>Updated non cancer data file for independent cities.</li>
+	<li>Updated most of R Shiny files for independent cities.</li>
+</ol><br>
+
+<h4>14.4</h4>
+<ol>
+	<li>Updated geojson and cancer data files for independent cities.</li>
+</ol><br>
+
+<h4>14.3</h4>
+<ol>
+	<li>Updated data info wording for where cancer rates are coming from to say that ward data comes from DC Cancer Registry.</li>
+</ol><br>
+
+<h4>14.2</h4>
+<ol>
+	<li>Made v4 cancer processing file to include ward rates in app.</li>
+</ol><br>
+
+<h4>14.1</h4>
+<ol>
+	<li>Fixed bug where data table output wasn't showing due to R function collision.</li>
+</ol><br>
+
+<h4>14.0</h4>
+<ol>
+	<li>Made cancer maps legend bins dynamic.</li>
+</ol><br>
+
+<h4>13.9</h4>
+<ol>
+	<li>Fixed health insurance coverage plot title.</li>
+</ol><br>
+
+<h4>13.8</h4>
+<ol>
+	<li>Updated cancer plots to explicitly say rates are average annual rates from 5-year period.</li>
+</ol><br>
+
+<h4>13.7</h4>
+<ol>
+	<li>Updated population plot y-axis to have comma formatting and stretch if DMV is plotted.</li>
+</ol><br>
+
+<h4>13.6</h4>
+<ol>
+	<li>Updated processing file to include region populations. Now is an option in the cancer maps filter.</li>
+	<li>Updated formatting in cancer maps, list view, and result to account for population comma formatting and median income dollar formatting.</li>
+</ol><br>
+
+<h4>13.5</h4>
+<ol>
+	<li>Updated Show Wards toggle to update cancer maps.</li>
+</ol><br>
+
+<h4>13.4</h4>
+<ol>
+	<li>Show Wards toggle now correctly updates map region filter and list view.</li>
+</ol><br>
+
+<h4>13.3</h4>
+<ol>
+	<li>Started creating maps without wards.</li>
+</ol><br>
+
+<h4>13.2</h4>
+<ol>
+	<li>Copied from v12.9.</li>
+</ol><br>
+
+<h4>13.1</h4>
+<ol>
+	<li>Attempted plotly again, but no luck. There is a method here https://community.rstudio.com/t/how-to-animate-plotly-plot-in-shiny-when-data-changes-solved/33228/7, but it is extremely hacky (I don't recommend).</li>
+</ol><br>
+
+<h4>13.0</h4>
+<ol>
+	<li>Attempted d3 again, made more progress but not quite there.</li>
+</ol><br>
+
+<h4>12.9</h4>
+<ol>
+	<li>Small sizing changes in the detailed cancer statistics and risk and protective factors tabs.</li>
+	<li>Copied from v12.8.</li>
+</ol><br>
+
+<h4>12.8.1</h4>
+<ol>
+	<li>Tried using d3 and plotly in Shiny, but didn't work too well.</li>
+</ol><br>
+
+<h4>12.8</h4>
+<ol>
+	<li>Updated cancer map legend bins to be less exaggerated. Some variables get even splits, some get based on percentiles.</li>
+</ol><br>
+
+<h4>12.7</h4>
+<ol>
+	<li>Updated cancer preprocessing file to include DC aggregate incidence and mortality rates.</li>
+	<li>Updated detailed cancer statistics page to start with DC. Previously, it was at Arlington County (first available region down the list).</li>
+</ol><br>
+
+<h4>12.6</h4>
+<ol>
+	<li>Updated project architecture image.</li>
+</ol><br>
+
+<h4>12.5</h4>
+<ol>
+	<li>Cleaned up pre-processing files.</li>
+	<li>Added image of project architecture.</li>
+</ol><br>
+
+<h4>12.4</h4>
+<ol>
+	<li>Made data explorer bar chart turquoise color.</li>
+	<li>Remade Data Explorer tutorial to show the new dygraph.</li>
+</ol><br>
+
+<h4>12.3</h4>
+<ol>
+	<li>Change data explorer plot 2 to a dygraph.</li>
+</ol><br>
+
+<h4>12.2</h4>
+<ol>
+	<li>Added a 1-variable plot to Data Explorer that shows regions over time.</li>
+</ol><br>
+
+<h4>12.1</h4>
+<ol>
+	<li>Fixed some axis labels on Data Explorer for 2-variable plots.</li>
+</ol><br>
+
+<h4>12.0</h4>
+<ol>
+	<li>Fixed some axis labels on Data Explorer for 1-variable plots.</li>
+</ol><br>
+
+<h4>11.9</h4>
+<ol>
+	<li>Included County Health Rankings data into Data Explorer tab.</li>
+</ol><br>
+
+<h4>11.8</h4>
+<ol>
+	<li>Included County Health Rankings data into Risk and Protective Factors tab.</li>
+</ol><br>
+
+<h4>11.7</h4>
+<ol>
+	<li>Included County Health Rankings data into cancer maps.</li>
+</ol><br>
+
+<h4>11.6</h4>
+<ol>
+	<li>Updated data to include County Health Rankings.</li>
+</ol><br>
+
+<h4>11.5</h4>
+<ol>
+	<li>Remade tutorial for tab navigation.</li>
+</ol><br>
+
+<h4>11.4</h4>
+<ol>
+	<li>Added tutorial for Data Explorer.</li>
+</ol><br>
+
+<h4>11.3</h4>
+<ol>
+	<li>Restricted Data Explorer time scale to what is available.</li>
+</ol><br>
+
+<h4>11.2</h4>
+<ol>
+	<li>Added 2-variable plot functionality to Data Explorer.</li>
+</ol><br>
+
+<h4>11.1</h4>
+<ol>
+	<li>Suppressed errors from showing in UI. You will still be able to see errors in console.</li>
+	<li>Added reactive value for last cancer category, so switching back to cancer variable won't reset to "All Cancers."</li>
+</ol><br>
+
+<h4>11.0</h4>
+<ol>
+	<li>Added loading spinners to tutorial gifs</li>
+</ol><br>
+
+<h4>10.9</h4>
+<ol>
+	<li>Worked more on Data Explorer tab</li>
+</ol><br>
+
+<h4>10.8</h4>
+<ol>
+	<li>Started Data Explorer tab</li>
+</ol><br>
+
+<h4>10.7</h4>
+<ol>
+	<li>Fixed positioning of help button for prod version</li>
+</ol><br>
+
+<h4>10.6</h4>
+<ol>
+	<li>Added GIF tutorials for the app</li>
+</ol><br>
+
+<h4>10.5</h4>
+<ol>
+	<li>Added current working version in release notes (testing only)</li>
+</ol><br>
+
+<h4>10.4</h4>
+<ol>
+	<li>No change</li>
+</ol><br>
+
+<h4>10.3</h4>
+<ol>
+	<li>Expaned help button to have basic instructions</li>
+	<li>Organized server a bit</li>
+</ol><br>
+
+<h4>10.2</h4>
+<ol>
+	<li>Added help button in top right. just starting this</li>
+</ol><br>
+
+<h4>10.1</h4>
+<ol>
+	<li>Unsuccessful attempt to address map re-focus from variable/subvariable change</li>
+	<li>Restructured developer pages and directory</li>
+</ol><br>
+
+<h4>10.0</h4>
+<ol>
+	<li>Got rid of README files in app folder and replaced with releaseNotes page</li>
+</ol><br>
+
+<h4>9.9</h4>
+<ol>
+	<li>No change</li>
+</ol><br>
+
+<h4>9.8</h4>
+<ol>
+	<li>Switched legend order in cancer plots to match look of the plot</li>
+</ol><br>
+
+<h4>9.7</h4>
+<ol>
+	<li>Added "Data not available" messages to detaile cancer plots</li>
+</ol><br>
+
+<h4>9.6</h4>
+<ol>
+	<li>Updated "Data not available" message to risk and protective 2-region plots</li>
+</ol><br>
+
+<h4>9.5</h4>
+<ol>
+	<li>Added "Data not available" message to risk and protective single plots</li>
+	<li>Tweaked Data Info to say when DMV Catchment Area value not available</li>
+</ol><br>
+
+<h4>9.4</h4>
+<ol>
+	<li>Added rent greater than 30% of household income</li>
+</ol><br>
+
+<h4>9.3</h4>
+<ol>
+	<li>Added rent greater than 30% of household income</li>
+</ol><br>
+
+<h4>9.2</h4>
+<ol>
+	<li>Removed bstooltips for now, it's very unstable</li>
+</ol><br>
+
+<h4>9.1</h4>
+<ol>
+	<li>Replaced all bsTooltips with modal dialogs</li>
+</ol><br>
+
+<h4>9.0</h4>
+<ol>
+	<li>Added data info dialogs to cancer maps</li>
+</ol><br>
+
+<h4>8.9</h4>
+<ol>
+	<li>Added Below Poverty Level</li>
+</ol><br>
+
+<h4>8.8</h4>
+<ol>
+	<li>Minor code modularization</li>
+</ol><br>
+
+<h4>8.7</h4>
+<ol>
+	<li>Added health insurance coverage data</li>
+</ol><br>
+
+<h4>8.6</h4>
+<ol>
+	<li>Changed zoom in mini maps</li>
+</ol><br>
+
+<h4>8.5</h4>
+<ol>
+	<li>Adjusted Fairfax County coordinates again</li>
+	<li>Added a dev notes section</li>
+</ol><br>
+
+<h4>8.4</h4>
+<ol>
+	<li>Adjusted Prince George's and Montgomery County coordinates</li>
+</ol><br>
+
+<h4>8.3</h4>
+<ol>
+	<li>Adjusted Arlington County coordinates</li>
+</ol><br>
+
+<h4>8.2</h4>
+<ol>
+	<li>Adjusted Fairfax County coordinates again</li>
+</ol><br>
+
+<h4>8.1</h4>
+<ol>
+	<li>Adjusted Fairfax County coordinates</li>
+</ol><br>
+
+<h4>8.0</h4>
+<ol>
+	<li>Adjusted Fairfax City coordinates</li>
+</ol><br>
+
+<h4>7.9</h4>
+<ol>
+	<li>Fixed bug where developer tab ID was showing in the UI when IS_TESTING is FALSE</li>
+</ol><br>
+
+<h4>7.8</h4>
+<ol>
+	<li>Updated pre-processing file for cancer data</li>
+</ol><br>
+
+<h4>7.7</h4>
+<ol>
+	<li>Added AQI back in by reading in AQI files</li>
+</ol><br>
+
+<h4>7.6</h4>
+<ol>
+	<li>Fixed pre-processing file - had to change API endpoints for some variables before 2017</li>
+</ol><br>
+
+<h4>7.5</h4>
+<ol>
+	<li>Fixed vehiclesPerHousingUnit categories</li>
+</ol><br>
+
+<h4>7.4</h4>
+<ol>
+	<li>Fixed unemployment rate</li>
+</ol><br>
+
+<h4>7.3</h4>
+<ol>
+	<li>masterDataFile_nonCancer_countyWard.csv is now created with R and api (not during app load)</li>
+	<li>processing file is C:\Users\derek.funk\Desktop\MSDS\Capstone\Cancer_Data_Visualizer\Data\Pre_Processing\preProcessing_createNonCancerMasterDataFile.R</li>
+</ol><br>
+
+<h4>7.2</h4>
+<ol>
+	<li>Added vehicles per housing unit</li>
+</ol><br>
+
+<h4>7.1</h4>
+<ol>
+	<li>Added option to view a bunch of tooltips</li>
+</ol><br>
+
+<h4>7.01</h4>
+<ol>
+	<li>Tried using rintrojs, but I find it too limiting</li>
+</ol><br>
+
+<h4>7.0</h4>
+<ol>
+	<li>Added a few loading spinners. Still more possibilities here.</li>
+</ol><br>
+
+<h4>6.9</h4>
+<ol>
+	<li>Fixed variable prefix to update correctly</li>
+</ol><br>
+
+<h4>6.8</h4>
+<ol>
+	<li>Included Air Quality Index data</li>
+</ol><br>
+
+<h4>6.7</h4>
+<ol>
+	<li>Added zoom in/out feature upon region change</li>
+</ol><br>
+
+<h4>6.6</h4>
+<ol>
+	<li>Fixed economic resources plots from not showing</li>
+</ol><br>
+
+<h4>6.5</h4>
+<ol>
+	<li>Updated cancer map 2 list view header name</li>
+	<li>Updated cancer data to include female breast cancer</li>
+	<li>Versioned after v6.4</li>
+</ol><br>
+
+<h4>6.4.1</h4>
+<ol>
+	<li>Tried to create a "Lock variable/subvariable" switch input. Complications with reactivity arose.</li>
+</ol><br>
+
+<h4>6.4</h4>
+<ol>
+	<li>Created switch input to lock regions</li>
+	<li>Had to unmodularize previous changes to make this work</li>
+</ol><br>
+
+<h4>6.3</h4>
+<ol>
+	<li>Updated cancer map list view header name</li>
+</ol><br>
+
+<h4>6.2</h4>
+<ol>
+	<li>Updated testing version of app so that when you deploy to prod, all you need to do is set IS_TESTING to FALSE</li>
+</ol><br>
+
+<h4>6.1</h4>
+<ol>
+	<li>Changed theme colors to red</li>
+</ol><br>
+
+<h4>6.0</h4>
+<ol>
+	<li>Moved cancer map legends to the bottom left for more space</li>
+</ol><br>
+
+<h4>5.9</h4>
+<ol>
+	<li>Modularized cancer map 2</li>
+	<li>Branched from v5.8</li>
+</ol><br>
+
+<h4>5.8.1</h4>
+<ol>
+	<li>Branched from v5.6</li>
+</ol><br>
+
+<h4>5.8</h4>
+<ol>
+	<li>Modularized cancer map 1 some more</li>
+</ol><br>
+
+<h4>5.7</h4>
+<ol>
+	<li>Modularized cancer map 1</li>
+</ol><br>
+
+<h4>5.6</h4>
+<ol>
+	<li>Fixed cancer map 1 issue with sub-variable showing up in result correctly</li>
+</ol><br>
+
+<h4>5.5</h4>
+<ol>
+	<li>Updated cancer map 1 region labels to have dollar format for median income</li>
+</ol><br>
+
+<h4>5.4</h4>
+<ol>
+	<li>Updated cancer map 1 for Median Age</li>
+</ol><br>
+
+<h4>5.3</h4>
+<ol>
+	<li>Updated cancer map 1 for Race</li>
+</ol><br>
+
+<h4>5.2</h4>
+<ol>
+	<li>Updated cancer map 1 for Median Age</li>
+</ol><br>
+
+<h4>5.1</h4>
+<ol>
+	<li>Updated cancer map 1 for Main Language Spoken at Home</li>
+</ol><br>
+
+<h4>5.0</h4>
+<ol>
+	<li>Updated cancer map 1 for Foreign-Born</li>
+</ol><br>
+
+<h4>4.9</h4>
+<ol>
+	<li>No change</li>
+</ol><br>
+
+<h4>4.8</h4>
+<ol>
+	<li>Tried to redraw current region border based on variable change (not working yet)</li>
+</ol><br>
+
+<h4>4.7</h4>
+<ol>
+	<li>Updated list view to account for edu attainment</li>
+</ol><br>
+
+<h4>4.6</h4>
+<ol>
+	<li>Updated list view to account for edu attainment</li>
+</ol><br>
+
+<h4>4.5</h4>
+<ol>
+	<li>Updated ACS data file to include rate (percent) column</li>
+	<li>Updated app to reference this rate column, instead of calculating it from count</li>
+</ol><br>
+
+<h4>4.4</h4>
+<ol>
+	<li>Updated cancer map1 list view header to change to mortality rate when needed</li>
+</ol><br>
+
+<h4>4.3</h4>
+<ol>
+	<li>Formatted cancer map in fluid row to look better</li>
+	<li>Updated cancer map 1 legend to dynamically change to mortality rate</li>
+</ol><br>
+
+<h4>4.2</h4>
+<ol>
+	<li>Updated cancer map1 list view to have dynamic variable header</li>
+</ol><br>
+
+<h4>4.1</h4>
+<ol>
+	<li>Placed mini-maps side by side instead of on top of each other.</li>
+</ol><br>
+
+<h4>4.0</h4>
+<ol>
+	<li>Placed mini-maps side by side instead of on top of each other.</li>
+</ol><br>
+
+<h4>3.9</h4>
+<ol>
+	<li>Fixed cancer mini maps</li>
+</ol><br>
+
+<h4>3.8</h4>
+<ol>
+	<li>Updated R packages</li>
+	<li>Changed geojson read method to account for updated R packages</li>
+</ol><br>
+
+<h4>3.7</h4>
+<ol>
+	<li>Update effects of changing cancer map1 variable to mortality rate</li>
+</ol><br>
+
+<h4>3.6</h4>
+<ol>
+	<li>Update cancer map 1 based on changes to cancer dropdown</li>
+</ol><br>
+
+<h4>3.5</h4>
+<ol>
+	<li>Created geo coordinates for DMV Catchment area from other regions</li>
+</ol><br>
+
+<h4>3.4</h4>
+<ol>
+	<li>No change</li>
+</ol><br>
+
+<h4>3.3</h4>
+<ol>
+	<li>Initial set up of Google Analytics to track website traffic</li>
+</ol><br>
+
+<h4>3.2</h4>
+<ol>
+	<li>Continued on cancer map 1</li>
+</ol><br>
+
+<h4>3.1</h4>
+<ol>
+	<li>Started cancer map 1</li>
+</ol><br>
+
+<h4>3.0</h4>
+<ol>
+	<li>Added mini-maps to cancer page</li>
+</ol><br>
+
+<h4>2.9</h4>
+<ol>
+	<li>Added mini-maps to cancer page</li>
+</ol><br>
+
+<h4>2.8</h4>
+<ol>
+	<li>Added mortality rate plots</li>
+</ol><br>
+
+<h4>2.7</h4>
+<ol>
+	<li>No change</li>
+</ol><br>
+
+<h4>2.6</h4>
+<ol>
+	<li>Made compare 2 regions and compare 2 cancer plots works</li>
+</ol><br>
+
+<h4>2.5</h4>
+<ol>
+	<li>Adding in Cancer data from UCSC</li>
+</ol><br>
+
+<h4>2.4</h4>
+<ol>
+	<li>No change</li>
+</ol><br>
+
+<h4>2.3</h4>
+<ol>
+	<li>Added x-axis tick labels for certain bar charts that had issues</li>
+</ol><br>
+
+<h4>2.2</h4>
+<ol>
+	<li>Added unemployment rate</li>
+</ol><br>
+
+<h4>2.1</h4>
+<ol>
+	<li>Added median age and modified chart bar colors</li>
+</ol><br>
+
+<h4>2.0</h4>
+<ol>
+	<li>Added median age data</li>
+</ol><br>
+
+<h4>1.27</h4>
+<ol>
+	<li>Finished expanding data to include DMV catchment area - contd</li>
+</ol><br>
+
+<h4>1.26</h4>
+<ol>
+	<li>Finished expanding data to include DMV catchment area - contd</li>
+</ol><br>
+
+<h4>1.25</h4>
+<ol>
+	<li>Finished expanding data to include DMV catchment area</li>
+</ol><br>
+
+<h4>1.24</h4>
+<ol>
+	<li>Added sociodemographic maps</li>
+</ol><br>
+
+<h4>1.23</h4>
+<ol>
+	<li>Expanded to include DMV catchment area</li>
+</ol><br>
+
+<h4>1.22</h4>
+<ol>
+	<li>Fixed 2-region plots</li>
+</ol><br>
+
+<h4>1.21</h4>
+<ol>
+	<li>Moved year from plot title to subtitle</li>
+</ol><br>
+
+<h4>1.20</h4>
+<ol>
+	<li>Fixed 2-region plots</li>
+</ol><br>
+
+<h4>1.19</h4>
+<ol>
+	<li>Cleaned up how regions are read</li>
+</ol><br>
+
+<h4>1.18</h4>
+<ol>
+	<li>Added a debug section</li>
+</ol><br>
+
+<h4>1.17</h4>
+<ol>
+	<li>Added a debug section</li>
+</ol><br>
+
+<h4>1.16</h4>
+<ol>
+	<li>Allowed for toggling into Economic Resources plots section</li>
+	<li>Added median household income</li>
+</ol><br>
+
+<h4>1.15</h4>
+<ol>
+	<li>Added main language spoken at home plot - contd</li>
+</ol><br>
+
+<h4>1.14</h4>
+<ol>
+	<li>Added main language spoken at home plot.</li>
+</ol><br>
+
+<h4>1.13</h4>
+<ol>
+	<li>Updated the socio demographics action button to not do anything if clicked when no inputs were changed. Will save run time.</li>
+</ol><br>
+
+<h4>1.12</h4>
+<ol>
+	<li>Added foreign born plot</li>
+</ol><br>
+
+<h4>1.11</h4>
+<ol>
+	<li>Restructured so that acs data can all be in 1 file</li>
+</ol><br>
+
+<h4>1.10</h4>
+<ol>
+	<li>Cleaned data up</li>
+</ol><br>
+
+<h4>1.9</h4>
+<ol>
+	<li>Fixed data</li>
+	<li>finished ethnicity plot</li>
+	<li>added year to education and ethnicity plots</li>
+</ol><br>
+
+<h4>1.8</h4>
+<ol>
+	<li>Cleaned up education compare chart - contd</li>
+</ol><br>
+
+<h4>1.7</h4>
+<ol>
+	<li>Cleaned up education compare chart - contd</li>
+</ol><br>
+
+<h4>1.6</h4>
+<ol>
+	<li>Cleaned up education compare chart</li>
+</ol><br>
+
+<h4>1.5</h4>
+<ol>
+	<li>Made education bar chart y ticks go by every 10%</li>
+</ol><br>
+
+<h4>1.4</h4>
+<ol>
+	<li>Graph ward vs ward for socio demographics</li>
+</ol><br>
+
+<h4>1.3</h4>
+<ol>
+	<li>Add a conditional 2nd region select input for socio demographics</li>
+</ol><br>
+
+<h4>1.2</h4>
+<ol>
+	<li>Used dplyr to clean up education data subset creations - contd</li>
+</ol><br>
+
+<h4>1.1</h4>
+<ol>
+	<li>Used dplyr to clean up education data subset creations</li>
+</ol><br>
+
+<h4>1.0</h4>
+<ol>
+	<li>Set up</li>
+</ol><br>
